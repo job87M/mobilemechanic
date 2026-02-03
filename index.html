@@ -1,0 +1,1144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RoadReady Mobile Mechanics | We Come To You</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Archivo:wght@400;500;600&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>
+    :root {
+      --garage-black: #0d0d0d;
+      --steel-gray: #2a2e35;
+      --concrete-gray: #4a5058;
+      --metal-silver: #a8adb5;
+      --chrome-white: #f5f7fa;
+      --warning-yellow: #ffd700;
+      --oil-orange: #ff6b35;
+      --engine-red: #dc2626;
+      --tool-blue: #3b82f6;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Archivo', sans-serif;
+      background: var(--garage-black);
+      color: var(--chrome-white);
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Concrete texture overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0.05;
+      z-index: 0;
+      pointer-events: none;
+      background-image: 
+        repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(255,255,255,.03) 2px, rgba(255,255,255,.03) 4px),
+        repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,.03) 2px, rgba(255,255,255,.03) 4px);
+    }
+
+    .app-container {
+      min-height: 100vh;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Header */
+    header {
+      background: linear-gradient(135deg, var(--steel-gray) 0%, var(--garage-black) 100%);
+      padding: 1.5rem 2rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      border-bottom: 3px solid var(--warning-yellow);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    }
+
+    .header-content {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+    }
+
+    .logo-section {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .logo {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 2.5rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      color: var(--chrome-white);
+      text-transform: uppercase;
+      position: relative;
+      animation: slideInLeft 0.8s ease-out;
+    }
+
+    .logo-accent {
+      color: var(--warning-yellow);
+    }
+
+    .logo-tagline {
+      font-family: 'Archivo', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--metal-silver);
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      margin-top: -0.3rem;
+    }
+
+    @keyframes slideInLeft {
+      from {
+        opacity: 0;
+        transform: translateX(-30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    nav {
+      display: flex;
+      gap: 2.5rem;
+      animation: fadeIn 1s ease-out 0.3s both;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    nav button {
+      background: none;
+      border: none;
+      color: var(--metal-silver);
+      font-family: 'Archivo', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      position: relative;
+      padding: 0.5rem 0;
+      transition: color 0.3s;
+    }
+
+    nav button::before {
+      content: '';
+      position: absolute;
+      bottom: -3px;
+      left: 0;
+      width: 0;
+      height: 3px;
+      background: var(--warning-yellow);
+      transition: width 0.3s ease;
+    }
+
+    nav button:hover::before,
+    nav button.active::before {
+      width: 100%;
+    }
+
+    nav button:hover,
+    nav button.active {
+      color: var(--warning-yellow);
+    }
+
+    /* Hero Section */
+    .hero {
+      background: linear-gradient(to bottom, rgba(13,13,13,0.8), rgba(42,46,53,0.9)),
+                  url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600"><defs><pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="1"/></pattern></defs><rect width="1200" height="600" fill="url(%23grid)"/></svg>');
+      background-size: cover;
+      background-position: center;
+      padding: 5rem 2rem 4rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 5px;
+      background: linear-gradient(90deg, 
+        var(--warning-yellow) 0%, 
+        var(--oil-orange) 50%, 
+        var(--warning-yellow) 100%
+      );
+      animation: shimmer 3s ease-in-out infinite;
+    }
+
+    @keyframes shimmer {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.6; }
+    }
+
+    .hero-content {
+      max-width: 900px;
+      margin: 0 auto;
+      animation: fadeInUp 1s ease-out;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(40px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .hero h1 {
+      font-family: 'Oswald', sans-serif;
+      font-size: 4.5rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+      text-transform: uppercase;
+      color: var(--chrome-white);
+      text-shadow: 0 4px 12px rgba(0, 0, 0, 0.8);
+    }
+
+    .hero-highlight {
+      color: var(--warning-yellow);
+      position: relative;
+      display: inline-block;
+    }
+
+    .hero p {
+      font-size: 1.3rem;
+      color: var(--metal-silver);
+      max-width: 700px;
+      margin: 0 auto 2.5rem;
+      line-height: 1.6;
+      font-weight: 500;
+    }
+
+    .cta-buttons {
+      display: flex;
+      gap: 1.5rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 2rem;
+    }
+
+    .btn {
+      padding: 1.2rem 3rem;
+      border: none;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+      border-radius: 2px;
+    }
+
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.2);
+      transform: translate(-50%, -50%);
+      transition: width 0.6s, height 0.6s;
+    }
+
+    .btn:hover::before {
+      width: 300px;
+      height: 300px;
+    }
+
+    .btn-primary {
+      background: var(--warning-yellow);
+      color: var(--garage-black);
+      box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+    }
+
+    .btn-primary:hover {
+      background: #ffed4e;
+      transform: translateY(-3px);
+      box-shadow: 0 6px 25px rgba(255, 215, 0, 0.6);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--chrome-white);
+      border: 2px solid var(--metal-silver);
+    }
+
+    .btn-secondary:hover {
+      background: var(--steel-gray);
+      border-color: var(--warning-yellow);
+      color: var(--warning-yellow);
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(255, 215, 0, 0.3);
+    }
+
+    /* Main Content */
+    main {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 4rem 2rem;
+    }
+
+    .section {
+      margin-bottom: 5rem;
+      animation: fadeIn 0.8s ease-out;
+    }
+
+    .section-title {
+      font-family: 'Oswald', sans-serif;
+      font-size: 3rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 3rem;
+      position: relative;
+      display: inline-block;
+    }
+
+    .section-title::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 0;
+      width: 100px;
+      height: 4px;
+      background: var(--warning-yellow);
+    }
+
+    /* Services Grid */
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      margin-top: 3rem;
+    }
+
+    .service-card {
+      background: linear-gradient(135deg, var(--steel-gray) 0%, rgba(42,46,53,0.6) 100%);
+      padding: 2.5rem;
+      border-radius: 4px;
+      border-left: 4px solid var(--warning-yellow);
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .service-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 100px;
+      height: 100px;
+      background: radial-gradient(circle, rgba(255,215,0,0.1) 0%, transparent 70%);
+      transform: translate(30%, -30%);
+    }
+
+    .service-card:hover {
+      transform: translateY(-8px);
+      border-left-color: var(--oil-orange);
+      box-shadow: 0 12px 30px rgba(255, 107, 53, 0.3);
+    }
+
+    .service-icon {
+      font-size: 3rem;
+      margin-bottom: 1.5rem;
+      display: block;
+    }
+
+    .service-card h3 {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+      color: var(--warning-yellow);
+      letter-spacing: 0.05em;
+    }
+
+    .service-card p {
+      color: var(--metal-silver);
+      line-height: 1.7;
+      font-size: 1.05rem;
+    }
+
+    /* Quote Form */
+    .quote-form {
+      background: linear-gradient(135deg, var(--steel-gray) 0%, var(--concrete-gray) 100%);
+      padding: 3rem;
+      border-radius: 4px;
+      border-top: 4px solid var(--warning-yellow);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    @media (max-width: 640px) {
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+      display: block;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--chrome-white);
+      margin-bottom: 0.6rem;
+    }
+
+    .required {
+      color: var(--engine-red);
+    }
+
+    .form-input,
+    .form-select,
+    .form-textarea {
+      width: 100%;
+      padding: 1rem;
+      background: var(--garage-black);
+      border: 2px solid var(--concrete-gray);
+      border-radius: 2px;
+      color: var(--chrome-white);
+      font-family: 'Archivo', sans-serif;
+      font-size: 1rem;
+      transition: all 0.3s;
+    }
+
+    .form-input:focus,
+    .form-select:focus,
+    .form-textarea:focus {
+      outline: none;
+      border-color: var(--warning-yellow);
+      box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.1);
+      background: rgba(13, 13, 13, 0.8);
+    }
+
+    .form-textarea {
+      min-height: 150px;
+      resize: vertical;
+    }
+
+    .form-select {
+      cursor: pointer;
+    }
+
+    /* Success Message */
+    .success-message {
+      background: linear-gradient(135deg, var(--steel-gray) 0%, var(--concrete-gray) 100%);
+      padding: 4rem 3rem;
+      border-radius: 4px;
+      border-top: 4px solid var(--warning-yellow);
+      text-align: center;
+      max-width: 600px;
+      margin: 0 auto;
+      animation: scaleIn 0.5s ease;
+    }
+
+    @keyframes scaleIn {
+      from {
+        opacity: 0;
+        transform: scale(0.9);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .success-icon {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: var(--warning-yellow);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 2rem;
+      font-size: 3rem;
+    }
+
+    .success-message h2 {
+      font-family: 'Oswald', sans-serif;
+      font-size: 2.5rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+      color: var(--warning-yellow);
+    }
+
+    .success-message p {
+      font-size: 1.2rem;
+      color: var(--metal-silver);
+      line-height: 1.6;
+      margin-bottom: 2rem;
+    }
+
+    /* Why Choose Us */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+      margin-top: 3rem;
+    }
+
+    .feature-card {
+      text-align: center;
+      padding: 2rem;
+      background: rgba(42, 46, 53, 0.4);
+      border-radius: 4px;
+      border: 2px solid transparent;
+      transition: all 0.3s;
+    }
+
+    .feature-card:hover {
+      border-color: var(--warning-yellow);
+      transform: translateY(-5px);
+      background: rgba(42, 46, 53, 0.8);
+    }
+
+    .feature-icon {
+      font-size: 3.5rem;
+      margin-bottom: 1rem;
+      display: block;
+    }
+
+    .feature-card h3 {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      margin-bottom: 0.8rem;
+      color: var(--warning-yellow);
+    }
+
+    .feature-card p {
+      color: var(--metal-silver);
+      line-height: 1.6;
+    }
+
+    /* Contact Info */
+    .contact-info {
+      background: linear-gradient(135deg, var(--steel-gray) 0%, var(--concrete-gray) 100%);
+      padding: 3rem;
+      border-radius: 4px;
+      border-left: 4px solid var(--oil-orange);
+      margin-top: 3rem;
+    }
+
+    .contact-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+    }
+
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .contact-item-icon {
+      font-size: 2.5rem;
+      color: var(--warning-yellow);
+    }
+
+    .contact-item-content h4 {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: var(--chrome-white);
+      margin-bottom: 0.3rem;
+    }
+
+    .contact-item-content p {
+      color: var(--metal-silver);
+      font-size: 1.1rem;
+    }
+
+    /* Footer */
+    footer {
+      background: var(--garage-black);
+      border-top: 3px solid var(--warning-yellow);
+      padding: 3rem 2rem;
+      text-align: center;
+      margin-top: 5rem;
+    }
+
+    footer p {
+      color: var(--metal-silver);
+      font-size: 1rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .hero h1 {
+        font-size: 3rem;
+      }
+
+      .hero p {
+        font-size: 1.1rem;
+      }
+
+      .section-title {
+        font-size: 2.2rem;
+      }
+
+      .logo {
+        font-size: 2rem;
+      }
+
+      nav {
+        gap: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState } = React;
+
+    function App() {
+      const [activeView, setActiveView] = useState('home');
+      const [quoteSubmitted, setQuoteSubmitted] = useState(false);
+      const [formData, setFormData] = useState({
+        name: '',
+        phone: '',
+        email: '',
+        location: '',
+        vehicleMake: '',
+        vehicleModel: '',
+        issue: '',
+        urgency: 'normal',
+        message: ''
+      });
+
+      const services = [
+        {
+          icon: '🔧',
+          title: 'General Repairs',
+          description: 'From brake pads to alternators, we handle all your vehicle repair needs on-site with professional expertise.'
+        },
+        {
+          icon: '🔍',
+          title: 'Diagnostics',
+          description: 'Advanced diagnostic equipment to identify issues quickly and accurately, saving you time and money.'
+        },
+        {
+          icon: '🛢️',
+          title: 'Oil Changes',
+          description: 'Regular oil changes and fluid top-ups performed at your location. Keep your engine running smoothly.'
+        },
+        {
+          icon: '⚙️',
+          title: 'Tire Services',
+          description: 'Tire changes, rotations, and emergency roadside assistance. We bring the workshop to you.'
+        },
+        {
+          icon: '🔋',
+          title: 'Battery Service',
+          description: 'Battery testing, replacement, and jump-starts. Never get stranded with a dead battery again.'
+        },
+        {
+          icon: '✅',
+          title: 'Pre-Purchase Inspection',
+          description: 'Comprehensive vehicle inspection before you buy. Make informed decisions with expert assessment.'
+        }
+      ];
+
+      const features = [
+        {
+          icon: '📍',
+          title: 'We Come To You',
+          description: 'No need to tow or drive. We bring the garage to your location.'
+        },
+        {
+          icon: '⚡',
+          title: 'Fast Response',
+          description: 'Same-day service available. Emergency call-outs prioritized.'
+        },
+        {
+          icon: '💰',
+          title: 'Fair Pricing',
+          description: 'Transparent quotes with no hidden fees. Quality work at honest prices.'
+        },
+        {
+          icon: '🛡️',
+          title: 'Guaranteed Work',
+          description: 'All repairs backed by our satisfaction guarantee.'
+        }
+      ];
+
+      const handleFormChange = (field, value) => {
+        setFormData(prev => ({ ...prev, [field]: value }));
+      };
+
+      const handleQuoteSubmit = async (e) => {
+        e.preventDefault();
+        // Simulate API call
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        setQuoteSubmitted(true);
+        
+        // Reset after 5 seconds
+        setTimeout(() => {
+          setQuoteSubmitted(false);
+          setFormData({
+            name: '',
+            phone: '',
+            email: '',
+            location: '',
+            vehicleMake: '',
+            vehicleModel: '',
+            issue: '',
+            urgency: 'normal',
+            message: ''
+          });
+        }, 5000);
+      };
+
+      return (
+        <div className="app-container">
+          <header>
+            <div className="header-content">
+              <div className="logo-section">
+                <div>
+                  <div className="logo">
+                    ROAD<span className="logo-accent">READY</span>
+                  </div>
+                  <div className="logo-tagline">Mobile Mechanics</div>
+                </div>
+              </div>
+              <nav>
+                <button 
+                  className={activeView === 'home' ? 'active' : ''}
+                  onClick={() => setActiveView('home')}
+                >
+                  Home
+                </button>
+                <button 
+                  className={activeView === 'services' ? 'active' : ''}
+                  onClick={() => setActiveView('services')}
+                >
+                  Services
+                </button>
+                <button 
+                  className={activeView === 'quote' ? 'active' : ''}
+                  onClick={() => setActiveView('quote')}
+                >
+                  Get Quote
+                </button>
+                <button 
+                  className={activeView === 'contact' ? 'active' : ''}
+                  onClick={() => setActiveView('contact')}
+                >
+                  Contact
+                </button>
+              </nav>
+            </div>
+          </header>
+
+          {activeView === 'home' && (
+            <>
+              <section className="hero">
+                <div className="hero-content">
+                  <h1>
+                    Expert Mechanics<br/>
+                    <span className="hero-highlight">At Your Location</span>
+                  </h1>
+                  <p>
+                    Professional vehicle repairs and maintenance services delivered right to your doorstep. 
+                    No garage visit needed. Fast, reliable, and affordable.
+                  </p>
+                  <div className="cta-buttons">
+                    <button className="btn btn-primary" onClick={() => setActiveView('quote')}>
+                      Get Free Quote
+                    </button>
+                    <button className="btn btn-secondary" onClick={() => setActiveView('services')}>
+                      Our Services
+                    </button>
+                  </div>
+                </div>
+              </section>
+
+              <main>
+                <section className="section">
+                  <h2 className="section-title">Why Choose RoadReady?</h2>
+                  <div className="features-grid">
+                    {features.map((feature, index) => (
+                      <div key={index} className="feature-card">
+                        <span className="feature-icon">{feature.icon}</span>
+                        <h3>{feature.title}</h3>
+                        <p>{feature.description}</p>
+                      </div>
+                    ))}
+                  </div>
+                </section>
+
+                <section className="section">
+                  <h2 className="section-title">Our Services</h2>
+                  <div className="services-grid">
+                    {services.slice(0, 3).map((service, index) => (
+                      <div key={index} className="service-card">
+                        <span className="service-icon">{service.icon}</span>
+                        <h3>{service.title}</h3>
+                        <p>{service.description}</p>
+                      </div>
+                    ))}
+                  </div>
+                  <div style={{ textAlign: 'center', marginTop: '3rem' }}>
+                    <button className="btn btn-secondary" onClick={() => setActiveView('services')}>
+                      View All Services
+                    </button>
+                  </div>
+                </section>
+              </main>
+            </>
+          )}
+
+          {activeView === 'services' && (
+            <>
+              <section className="hero" style={{ padding: '3rem 2rem' }}>
+                <div className="hero-content">
+                  <h1>Our Services</h1>
+                  <p>Comprehensive mobile mechanic services for all your vehicle needs</p>
+                </div>
+              </section>
+
+              <main>
+                <section className="section">
+                  <div className="services-grid">
+                    {services.map((service, index) => (
+                      <div key={index} className="service-card">
+                        <span className="service-icon">{service.icon}</span>
+                        <h3>{service.title}</h3>
+                        <p>{service.description}</p>
+                      </div>
+                    ))}
+                  </div>
+                  <div style={{ textAlign: 'center', marginTop: '3rem' }}>
+                    <button className="btn btn-primary" onClick={() => setActiveView('quote')}>
+                      Request a Quote
+                    </button>
+                  </div>
+                </section>
+              </main>
+            </>
+          )}
+
+          {activeView === 'quote' && (
+            <>
+              <section className="hero" style={{ padding: '3rem 2rem' }}>
+                <div className="hero-content">
+                  <h1>Get Free Quote</h1>
+                  <p>Tell us about your vehicle issue and we'll provide a competitive quote within hours</p>
+                </div>
+              </section>
+
+              <main>
+                <section className="section">
+                  {!quoteSubmitted ? (
+                    <div className="quote-form">
+                      <form onSubmit={handleQuoteSubmit}>
+                        <div className="form-row">
+                          <div className="form-group">
+                            <label className="form-label">
+                              Your Name <span className="required">*</span>
+                            </label>
+                            <input
+                              type="text"
+                              className="form-input"
+                              placeholder="John Smith"
+                              value={formData.name}
+                              onChange={(e) => handleFormChange('name', e.target.value)}
+                              required
+                            />
+                          </div>
+                          <div className="form-group">
+                            <label className="form-label">
+                              Phone Number <span className="required">*</span>
+                            </label>
+                            <input
+                              type="tel"
+                              className="form-input"
+                              placeholder="(555) 123-4567"
+                              value={formData.phone}
+                              onChange={(e) => handleFormChange('phone', e.target.value)}
+                              required
+                            />
+                          </div>
+                        </div>
+
+                        <div className="form-row">
+                          <div className="form-group">
+                            <label className="form-label">Email</label>
+                            <input
+                              type="email"
+                              className="form-input"
+                              placeholder="john@example.com"
+                              value={formData.email}
+                              onChange={(e) => handleFormChange('email', e.target.value)}
+                            />
+                          </div>
+                          <div className="form-group">
+                            <label className="form-label">
+                              Your Location <span className="required">*</span>
+                            </label>
+                            <input
+                              type="text"
+                              className="form-input"
+                              placeholder="City or Postcode"
+                              value={formData.location}
+                              onChange={(e) => handleFormChange('location', e.target.value)}
+                              required
+                            />
+                          </div>
+                        </div>
+
+                        <div className="form-row">
+                          <div className="form-group">
+                            <label className="form-label">
+                              Vehicle Make <span className="required">*</span>
+                            </label>
+                            <input
+                              type="text"
+                              className="form-input"
+                              placeholder="e.g., Toyota, Ford, BMW"
+                              value={formData.vehicleMake}
+                              onChange={(e) => handleFormChange('vehicleMake', e.target.value)}
+                              required
+                            />
+                          </div>
+                          <div className="form-group">
+                            <label className="form-label">
+                              Vehicle Model <span className="required">*</span>
+                            </label>
+                            <input
+                              type="text"
+                              className="form-input"
+                              placeholder="e.g., Camry, Focus, 3 Series"
+                              value={formData.vehicleModel}
+                              onChange={(e) => handleFormChange('vehicleModel', e.target.value)}
+                              required
+                            />
+                          </div>
+                        </div>
+
+                        <div className="form-row">
+                          <div className="form-group">
+                            <label className="form-label">
+                              Type of Issue <span className="required">*</span>
+                            </label>
+                            <select
+                              className="form-select"
+                              value={formData.issue}
+                              onChange={(e) => handleFormChange('issue', e.target.value)}
+                              required
+                            >
+                              <option value="">Select issue type</option>
+                              <option value="brakes">Brake Problems</option>
+                              <option value="engine">Engine Issues</option>
+                              <option value="electrical">Electrical Problems</option>
+                              <option value="tires">Tire Service</option>
+                              <option value="battery">Battery Issues</option>
+                              <option value="oil">Oil Change</option>
+                              <option value="diagnostic">General Diagnostic</option>
+                              <option value="other">Other</option>
+                            </select>
+                          </div>
+                          <div className="form-group">
+                            <label className="form-label">Urgency</label>
+                            <select
+                              className="form-select"
+                              value={formData.urgency}
+                              onChange={(e) => handleFormChange('urgency', e.target.value)}
+                            >
+                              <option value="normal">Normal (2-3 days)</option>
+                              <option value="urgent">Urgent (Same day)</option>
+                              <option value="emergency">Emergency (ASAP)</option>
+                            </select>
+                          </div>
+                        </div>
+
+                        <div className="form-group">
+                          <label className="form-label">
+                            Describe the Problem <span className="required">*</span>
+                          </label>
+                          <textarea
+                            className="form-textarea"
+                            placeholder="Please describe the issue you're experiencing with your vehicle in as much detail as possible..."
+                            value={formData.message}
+                            onChange={(e) => handleFormChange('message', e.target.value)}
+                            required
+                          />
+                        </div>
+
+                        <button type="submit" className="btn btn-primary" style={{ width: '100%' }}>
+                          Submit Quote Request
+                        </button>
+                      </form>
+                    </div>
+                  ) : (
+                    <div className="success-message">
+                      <div className="success-icon">✓</div>
+                      <h2>Quote Request Received!</h2>
+                      <p>
+                        Thanks for reaching out! We've received your quote request and will 
+                        contact you within 2-4 hours to discuss your vehicle needs and provide 
+                        a competitive quote.
+                      </p>
+                      <button 
+                        className="btn btn-primary"
+                        onClick={() => setActiveView('home')}
+                      >
+                        Back to Home
+                      </button>
+                    </div>
+                  )}
+                </section>
+              </main>
+            </>
+          )}
+
+          {activeView === 'contact' && (
+            <>
+              <section className="hero" style={{ padding: '3rem 2rem' }}>
+                <div className="hero-content">
+                  <h1>Contact Us</h1>
+                  <p>Ready to help with all your vehicle needs</p>
+                </div>
+              </section>
+
+              <main>
+                <section className="section">
+                  <div className="contact-info">
+                    <h2 className="section-title">Get In Touch</h2>
+                    <div className="contact-grid">
+                      <div className="contact-item">
+                        <span className="contact-item-icon">📞</span>
+                        <div className="contact-item-content">
+                          <h4>Phone</h4>
+                          <p>(555) ROADREADY</p>
+                          <p>(555) 762-3732</p>
+                        </div>
+                      </div>
+                      <div className="contact-item">
+                        <span className="contact-item-icon">📧</span>
+                        <div className="contact-item-content">
+                          <h4>Email</h4>
+                          <p>info@roadready.com</p>
+                          <p>emergency@roadready.com</p>
+                        </div>
+                      </div>
+                      <div className="contact-item">
+                        <span className="contact-item-icon">⏰</span>
+                        <div className="contact-item-content">
+                          <h4>Hours</h4>
+                          <p>Mon-Fri: 7am - 8pm</p>
+                          <p>Sat-Sun: 8am - 6pm</p>
+                        </div>
+                      </div>
+                      <div className="contact-item">
+                        <span className="contact-item-icon">📍</span>
+                        <div className="contact-item-content">
+                          <h4>Service Area</h4>
+                          <p>Greater London</p>
+                          <p>& Surrounding Areas</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div style={{ textAlign: 'center', marginTop: '3rem' }}>
+                    <h3 style={{ 
+                      fontFamily: 'Oswald, sans-serif', 
+                      fontSize: '2rem', 
+                      marginBottom: '1.5rem',
+                      color: 'var(--warning-yellow)'
+                    }}>
+                      Emergency Breakdown?
+                    </h3>
+                    <p style={{ 
+                      fontSize: '1.2rem', 
+                      color: 'var(--metal-silver)', 
+                      marginBottom: '2rem' 
+                    }}>
+                      Call us now for immediate assistance
+                    </p>
+                    <button className="btn btn-primary" onClick={() => setActiveView('quote')}>
+                      Request Emergency Service
+                    </button>
+                  </div>
+                </section>
+              </main>
+            </>
+          )}
+
+          <footer>
+            <p>© 2024 RoadReady Mobile Mechanics. Professional vehicle repair at your location.</p>
+          </footer>
+        </div>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+</body>
+</html>
